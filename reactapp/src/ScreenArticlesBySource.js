@@ -50,7 +50,7 @@ function ScreenArticlesBySource(props) {
     var response = await fetch('/wishlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}&tokenFromFront=${props.token}`
+      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}&tokenFromFront=${props.token}&langueFromFront=${props.selectedLang}`
     })
     response = response.json()
     console.log(response)
@@ -105,7 +105,7 @@ function ScreenArticlesBySource(props) {
 
 function mapStateToProps(state) {
   //console.log(state)
-  return { token: state.token };
+  return { selectedLang: state.selectedLang, token: state.token };
 }
 
 function mapDispatchToProps(dispatch) {

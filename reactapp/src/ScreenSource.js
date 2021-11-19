@@ -8,40 +8,47 @@ require ('dotenv').config()
 
 function ScreenSource(props) {
 
-  const [sourceList, setSourceList] = useState([])
-  const [selectLanguage, setSelectedLang] = useState(props.selectLanguage);
+  const [sourceList, setSourceList] = useState([]);
   
   useEffect(() => {
     const APIResultsLoading = async() => {
-      var langue = 'fr'
-      var country = 'fr'
-        
-      switch (selectLanguage) {
-        case 'en' :
-          langue = 'en';
-          country = 'us';
-          break;
-        default:
-          langue = 'fr';
-          country = 'fr';
-          break;
-      };
-      props.changeLanguage(selectLanguage);
-      const data = await fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=5fb9991067044cbc83aadf4c458cb434&language=${langue}&country=${country}`)
+      console.log(props.selectedLang)
+      const data = await fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=5fb9991067044cbc83aadf4c458cb434&language=${props.selectedLang}`)
       const body = await data.json()
       setSourceList(body.sources)
     }
-
     APIResultsLoading()
-  }, [selectLanguage])
+  }, [])
+
+  const handleLanguageClick = async (language) => {
+    props.changeLanguage(language);
+    const response = await fetch('/language', {
+      method: 'PUT',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `tokenFromFront=${props.token}&languageFromFront=${language}`
+    })
+    console.log(await response.json());
+
+    props.resetWishList();
+    const data = await fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=5fb9991067044cbc83aadf4c458cb434&language=${language}`)
+    const body = await data.json()
+    setSourceList(body.sources)
+  }
+
+  let styleLang = {
+    width:'70px', margin:'20px', cursor:'pointer'
+  }
+  let styleLangSelected = {
+    width:'70px', margin:'20px', cursor:'pointer', border: '5px solid #fff', borderRadius:'50%'
+  }
 
   return (
     <div>
         <Nav/>
        
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="Banner">
-          <img alt="français" style={{width:'70px', margin:'20px'}} src='/images/france.png' onClick={() => setSelectedLang('fr') } />
-          <img alt="english" style={{width:'70px', margin:'20px'}} src='/images/united-states.png' onClick={() => setSelectedLang('en')} /> 
+          <img alt="français" style={props.selectedLang === 'fr' ? styleLangSelected : styleLang} src='/images/france.png' onClick={() => handleLanguageClick('fr') } />
+          <img alt="english" style={props.selectedLang === 'en' ? styleLangSelected : styleLang} src='/images/united-states.png' onClick={() => handleLanguageClick('en')} /> 
         </div>
 
        <div className="HomeThemes">
@@ -68,17 +75,22 @@ function ScreenSource(props) {
 }
 
 function mapStateToProps(state) {
+  console.log('selectedLang: ' + state.selectedLang);
   return {
-    selectedLang: state.selectLanguage, token: state.token
+    selectedLang: state.selectedLang, token: state.token
     }
   };
 
 function mapDispatchToProps(dispatch) {
   return {
-      changeLanguage: function(selectLanguage) {
-        dispatch({ type: 'changeLang',
-                  selectedLang: selectLanguage });
-        }
+    resetWishList: function () {
+      dispatch({ type: "resetArticle" });
+    },
+    changeLanguage: function(selectedLang) {
+      console.log('changeLanguage: ' + selectedLang);
+      dispatch({ type: 'changeLanguage',
+        selectedLang: selectedLang });
+      }
     }
   };
 

@@ -11,6 +11,7 @@ router.post("/sign-up", async function (req, res, next) {
   var result = false;
   var saveUser = null;
   var token = null;
+  var langue = null;
 
 
   const data = await userModel.findOne({
@@ -36,16 +37,19 @@ router.post("/sign-up", async function (req, res, next) {
       email: req.body.emailFromFront,
       password: hash,
       token: uid2(32),
+      langue: 'fr'
     });
 
     saveUser = await newUser.save();
 
     if (saveUser) {
       result = true;
+      token = saveUser.token;
+      langue = saveUser.langue;
     }
   }
 
-  res.json({ result, saveUser, error, token });
+  res.json({ result, saveUser, error, token, langue});
 });
 
 router.post("/sign-in", async function (req, res, next) {
@@ -53,6 +57,7 @@ router.post("/sign-in", async function (req, res, next) {
   var user = null;
   var error = [];
   var token = null;
+  var langue = null;
 
   if (req.body.emailFromFront == "" || req.body.passwordFromFront == "") {
     error.push("champs vides");
@@ -71,6 +76,7 @@ router.post("/sign-in", async function (req, res, next) {
       
         result = true;
         token = user.token
+        langue = user.langue
       } else {
         result = false;
         error.push("mot de passe incorrect");
@@ -79,7 +85,7 @@ router.post("/sign-in", async function (req, res, next) {
       error.push("email incorrect");
     }
   }
-  res.json({ result, user, error, token });
+  res.json({ result, user, error, token, langue });
 });
 
 router.post("/wishlist", async function (req, res, next) {
@@ -95,7 +101,8 @@ router.post("/wishlist", async function (req, res, next) {
         description: req.body.descriptionFromFront,
         content: req.body.contentFromFront,
         urlToImage: req.body.imageFromFront,
-        userId: userFound.id
+        userId: userFound.id,
+        langue: req.body.langueFromFront
       });
     
       let saveArticle = await newArticle.save();
@@ -131,7 +138,7 @@ router.get("/wishlist", async function (req, res, next) {
   console.log('blablba')
   let articlesFind = [];
   if(userFound){
-    articlesFind = await articleModel.find({userId:userFound.id})
+    articlesFind = await articleModel.find({userId:userFound.id, langue: req.query.languageFromFront})
     console.log(articlesFind)
     
     result = true;
@@ -141,5 +148,18 @@ router.get("/wishlist", async function (req, res, next) {
   
 }
 )
+
+router.put("/language", async function (req, res, next) {
+  let userFound = await userModel.findOne({token: req.body.tokenFromFront});
+  let result= false;
+  console.log(userFound);
+  if(userFound){
+    result = true;
+    userFound.langue = req.body.languageFromFront;
+    let userSaved = await userFound.save();
+    console.log(userSaved);
+  }
+  res.json({ result }); 
+})
 
 module.exports = router ;

@@ -5,6 +5,7 @@ const articleSchema = mongoose.Schema({
     description: String,
     content: String,
     urlToImage:String,
+    langue:String,
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'users'}
 })
 

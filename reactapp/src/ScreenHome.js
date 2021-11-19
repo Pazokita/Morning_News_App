@@ -29,7 +29,8 @@ function ScreenHome(props) {
     const body = await data.json()
 
     if(body.result === true){
-      props.addToken(body.token)
+      props.addToken(body.token);
+      props.changeLanguage(body.langue);
       setUserExists(true)
     } else {
       setErrorsSignup(body.error)
@@ -47,7 +48,9 @@ function ScreenHome(props) {
     const body = await data.json()
 
     if(body.result === true){
-      props.addToken(body.token)
+      props.addToken(body.token);
+      console.log('body.langue: '+body.langue);
+      props.changeLanguage(body.langue);
       setUserExists(true)
     }  else {
       setErrorsSignin(body.error)
@@ -107,6 +110,12 @@ function ScreenHome(props) {
 
 function mapDispatchToProps(dispatch){
   return {
+    changeLanguage: function(selectedLang) {
+      console.log('change langue: ' + selectedLang);
+      dispatch({ type: 'changeLanguage',
+        selectedLang: selectedLang 
+      });
+    },
     addToken: function(token){
       dispatch({type: 'addToken', token: token})
     }
