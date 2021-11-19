@@ -4,7 +4,7 @@ import "./App.css";
 import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
 import { connect } from "react-redux";
-require ('dotenv').config()
+require('dotenv').config()
 const { Meta } = Card;
 //console.log(process.env);
 function ScreenArticlesBySource(props) {
@@ -15,7 +15,7 @@ function ScreenArticlesBySource(props) {
   const [content, setContent] = useState("");
 
   var { id } = useParams();
-  
+
   useEffect(() => {
     const findArticles = async () => {
       const data = await fetch(
@@ -49,7 +49,7 @@ function ScreenArticlesBySource(props) {
     props.addToWishList(article);
     var response = await fetch('/wishlist', {
       method: 'POST',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}&tokenFromFront=${props.token}`
     })
     response = response.json()
