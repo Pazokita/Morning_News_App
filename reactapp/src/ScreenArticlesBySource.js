@@ -6,7 +6,7 @@ import Nav from "./Nav";
 import { connect } from "react-redux";
 require ('dotenv').config()
 const { Meta } = Card;
-
+//console.log(process.env);
 function ScreenArticlesBySource(props) {
   const [articleList, setArticleList] = useState([]);
 
@@ -15,11 +15,11 @@ function ScreenArticlesBySource(props) {
   const [content, setContent] = useState("");
 
   var { id } = useParams();
-
+  
   useEffect(() => {
     const findArticles = async () => {
       const data = await fetch(
-        `https://newsapi.org/v2/top-headlines?sources=${id}&apiKey=${process.env.API_KEY}`
+        `https://newsapi.org/v2/top-headlines?sources=${id}&apiKey=5fb9991067044cbc83aadf4c458cb434`
       );
       const body = await data.json();
       console.log(body);
@@ -45,6 +45,16 @@ function ScreenArticlesBySource(props) {
     setVisible(false);
   };
 
+  var handleLikeClick = async (article) => {
+    props.addToWishList(article);
+    var response = await fetch('/wishlist', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}`
+    })
+    response = response.json()
+    console.log(response)
+  }
   return (
     <div>
       <Nav />
@@ -70,7 +80,7 @@ function ScreenArticlesBySource(props) {
                   onClick={() => showModal(article.title, article.content)}
                 />,
                 <Icon
-                  onClick={() => props.addToWishList(article)}
+                  onClick={() => handleLikeClick(article)}
                   type="like"
                   key="ellipsis"
                 />,

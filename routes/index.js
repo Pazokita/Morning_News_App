@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 var userModel = require("../models/users");
-
+var articleModel = require("../models/articles");
 var bcrypt = require("bcrypt");
 var uid2 = require("uid2");
 
@@ -81,5 +81,30 @@ router.post("/sign-in", async function (req, res, next) {
   }
   res.json({ result, user, error, token });
 });
+
+router.post("/wishlist", async function (req, res, next) {
+  let articlefound = await articleModel.findOne({title:req.body.titleFromFront})
+  let result= false;
+  if(!articlefound) {
+    
+    var newArticle = new articleModel({
+      title: req.body.titleFromFront,
+      description: req.body.descriptionFromFront,
+      content: req.body.contentFromFront,
+      image: req.body.imageFromFront,
+    });
+  
+    saveArticle = await newArticle.save();
+    if (saveArticle) {
+      result = true;
+    }
+  res.json({ result, saveArticle });
+  } else {
+    res.json({result})
+  }
+ 
+ 
+});  
+
 
 module.exports = router ;

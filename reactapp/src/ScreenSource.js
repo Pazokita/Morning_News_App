@@ -24,7 +24,7 @@ function ScreenSource(props) {
           break;
       };
       props.changeLanguage(selectLanguage);
-      const data = await fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=${process.env.API_KEY}&language=${langue}&country=${country}`)
+      const data = await fetch(`https://newsapi.org/v2/top-headlines/sources?apiKey=5fb9991067044cbc83aadf4c458cb434&language=${langue}&country=${country}`)
       const body = await data.json()
       setSourceList(body.sources)
     }
