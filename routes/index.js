@@ -106,5 +106,15 @@ router.post("/wishlist", async function (req, res, next) {
  
 });  
 
+router.delete("/wishlist", async function (req, res, next) {
+  let articlefound = await articleModel.findOneAndDelete({title:req.body.titleFromFront});
+  let result= false;
+  if(articlefound) {
+    result = true;
+  }
+  res.json({ result });
+ 
+});  
+
 
 module.exports = router ;

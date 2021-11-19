@@ -29,6 +29,16 @@ function ScreenMyArticles(props) {
     setVisible(false);
   };
 
+  var handleRemoveClick = async (title) => {
+    props.deleteToWishList(title);
+    const response = await fetch('/wishlist', {
+      method: 'DELETE',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: 'titleFromFront='+title
+    })
+    console.log(response);
+  }
+
   var noArticles;
   if (props.myArticles.length === 0) {
     noArticles = <div style={{ marginTop: "30px" }}> No articles </div>;
@@ -61,7 +71,7 @@ function ScreenMyArticles(props) {
                 <Icon
                   type="delete"
                   key="ellipsis"
-                  onClick={() => props.deleteToWishList(article.title)}
+                  onClick={() => handleRemoveClick(article.title)}
                 />,
               ]}
             >
