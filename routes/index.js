@@ -83,22 +83,29 @@ router.post("/sign-in", async function (req, res, next) {
 });
 
 router.post("/wishlist", async function (req, res, next) {
-  let articlefound = await articleModel.findOne({title:req.body.titleFromFront})
+  let articlefound = await articleModel.findOne({title:req.body.titleFromFront, token: req.body.tokenFromFront});
   let result= false;
+  console.log(articlefound);
   if(!articlefound) {
+    let userFound = await userModel.findOne({token: req.body.tokenFromFront});
+    console.log(userFound);
+    if(userFound) {
+      var newArticle = new articleModel({
+        title: req.body.titleFromFront,
+        description: req.body.descriptionFromFront,
+        content: req.body.contentFromFront,
+        image: req.body.imageFromFront,
+        userId: userFound.id
+      });
     
-    var newArticle = new articleModel({
-      title: req.body.titleFromFront,
-      description: req.body.descriptionFromFront,
-      content: req.body.contentFromFront,
-      image: req.body.imageFromFront,
-    });
-  
-    saveArticle = await newArticle.save();
-    if (saveArticle) {
-      result = true;
+      let saveArticle = await newArticle.save();
+      if (saveArticle) {
+        result = true;
+      }
+      res.json({ result, saveArticle });
+    } else {
+      res.json({result})
     }
-  res.json({ result, saveArticle });
   } else {
     res.json({result})
   }
@@ -107,13 +114,16 @@ router.post("/wishlist", async function (req, res, next) {
 });  
 
 router.delete("/wishlist", async function (req, res, next) {
-  let articlefound = await articleModel.findOneAndDelete({title:req.body.titleFromFront});
+  let userFound = await userModel.findOne({token: req.body.tokenFromFront});
+  let articlefound;
   let result= false;
-  if(articlefound) {
-    result = true;
+  if(userFound) {
+    articlefound = await articleModel.findOneAndDelete({title:req.body.titleFromFront, userId: userFound.id});
+    if(articlefound) {
+      result = true;
+    }
   }
   res.json({ result });
- 
 });  
 
 

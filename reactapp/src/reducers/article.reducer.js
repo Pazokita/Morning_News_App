@@ -19,7 +19,7 @@ export default function(wishlist  = [], action) {
       //console.log(wishListCopy)
       return wishListCopy
     } else if(action.type === 'deleteArticle') {
-      var wishListCopy = [...wishlist]
+      wishListCopy = [...wishlist]
       wishListCopy = wishlist.filter(e => e.title !== action.title);
       return wishListCopy;
     } else{

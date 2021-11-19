@@ -34,7 +34,7 @@ function ScreenMyArticles(props) {
     const response = await fetch('/wishlist', {
       method: 'DELETE',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body: 'titleFromFront='+title
+      body: `titleFromFront=${title}&token=${props.token}`
     })
     console.log(response);
   }
@@ -93,7 +93,7 @@ function ScreenMyArticles(props) {
 }
 function mapStateToProps(state) {
   //console.log(state)
-  return { myArticles: state.wishlist };
+  return { myArticles: state.wishlist, token: state.token };
 }
 function mapDispatchToProps(dispatch) {
   return {

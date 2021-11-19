@@ -9,7 +9,7 @@ require ('dotenv').config()
 function ScreenSource(props) {
 
   const [sourceList, setSourceList] = useState([])
-  const [ selectLanguage, setSelectedLang ] = useState(props.selectLanguage);
+  const [selectLanguage, setSelectedLang] = useState(props.selectLanguage);
   
   useEffect(() => {
     const APIResultsLoading = async() => {
@@ -17,10 +17,13 @@ function ScreenSource(props) {
       var country = 'fr'
         
       switch (selectLanguage) {
-
         case 'en' :
           langue = 'en';
           country = 'us';
+          break;
+        default:
+          langue = 'fr';
+          country = 'fr';
           break;
       };
       props.changeLanguage(selectLanguage);
@@ -37,8 +40,8 @@ function ScreenSource(props) {
         <Nav/>
        
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="Banner">
-          <img style={{width:'70px', margin:'20px'}} src='/images/france.png' onClick={() => setSelectedLang('fr') } />
-          <img style={{width:'70px', margin:'20px'}} src='/images/united-states.png' onClick={() => setSelectedLang('en')} /> 
+          <img alt="français" style={{width:'70px', margin:'20px'}} src='/images/france.png' onClick={() => setSelectedLang('fr') } />
+          <img alt="english" style={{width:'70px', margin:'20px'}} src='/images/united-states.png' onClick={() => setSelectedLang('en')} /> 
         </div>
 
        <div className="HomeThemes">
@@ -73,9 +76,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
       changeLanguage: function(selectLanguage) {
-      dispatch({ type: 'changeLang',
-                selectedLang: selectLanguage });
-      }
+        dispatch({ type: 'changeLang',
+                  selectedLang: selectLanguage });
+        }
     }
   };
 

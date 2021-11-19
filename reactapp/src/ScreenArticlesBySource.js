@@ -50,7 +50,7 @@ function ScreenArticlesBySource(props) {
     var response = await fetch('/wishlist', {
       method: 'POST',
       headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}`
+      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&imageFromFront=${article.urlToImage}&tokenFromFront=${props.token}`
     })
     response = response.json()
     console.log(response)
@@ -103,6 +103,11 @@ function ScreenArticlesBySource(props) {
   );
 }
 
+function mapStateToProps(state) {
+  //console.log(state)
+  return { token: state.token };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     addToWishList: function (article) {
@@ -111,4 +116,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(ScreenArticlesBySource);
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenArticlesBySource);

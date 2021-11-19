@@ -4,7 +4,8 @@ const articleSchema = mongoose.Schema({
     title: String,
     description: String,
     content: String,
-    image:String
+    image:String,
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'users'}
 })
 
 const articleModel = mongoose.model('articles', articleSchema)
