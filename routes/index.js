@@ -94,7 +94,7 @@ router.post("/wishlist", async function (req, res, next) {
         title: req.body.titleFromFront,
         description: req.body.descriptionFromFront,
         content: req.body.contentFromFront,
-        image: req.body.imageFromFront,
+        urlToImage: req.body.imageFromFront,
         userId: userFound.id
       });
     
@@ -125,6 +125,21 @@ router.delete("/wishlist", async function (req, res, next) {
   }
   res.json({ result });
 });  
-
+router.get("/wishlist", async function (req, res, next) {
+  let userFound = await userModel.findOne({token: req.query.tokenFromFront});
+  let result= false;
+  console.log('blablba')
+  let articlesFind = [];
+  if(userFound){
+    articlesFind = await articleModel.find({userId:userFound.id})
+    console.log(articlesFind)
+    
+    result = true;
+      
+  } 
+  res.json({ result, articlesFind });
+  
+}
+)
 
 module.exports = router ;

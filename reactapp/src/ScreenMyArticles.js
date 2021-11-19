@@ -1,4 +1,4 @@
-import React ,{useState} from "react";
+import React ,{useState, useEffect} from "react";
 import "./App.css";
 import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
@@ -20,14 +20,28 @@ function ScreenMyArticles(props) {
   };
 
   var handleOk = (e) => {
-    console.log(e);
+   // console.log(e);
     setVisible(false);
   };
 
   var handleCancel = (e) => {
-    console.log(e);
+  //  console.log(e);
     setVisible(false);
   };
+
+  useEffect(() => {
+    const findArticles = async () => {
+      const data = await fetch(`/wishlist?tokenFromFront=${props.token}`);
+      const body = await data.json();
+      console.log(body); 
+      if(body.articlesFind){
+        body.articlesFind.forEach(article => props.addToWishList(article)) 
+      }
+      
+    };
+    
+    findArticles();
+}, [])
 
   var handleRemoveClick = async (title) => {
     props.deleteToWishList(title);
@@ -99,6 +113,9 @@ function mapDispatchToProps(dispatch) {
   return {
     deleteToWishList: function (articleTitle) {
       dispatch({ type: "deleteArticle", title: articleTitle });
+    },
+    addToWishList: function (article) {
+      dispatch({ type: "addArticle", articleLiked: article });
     },
   };
 }
